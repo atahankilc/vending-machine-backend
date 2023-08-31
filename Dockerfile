@@ -1,15 +1,13 @@
+FROM maven:3.8.3-openjdk-17 AS build
+COPY src /usr/src/app/src
+COPY pom.xml /usr/src/app
+RUN mvn -f /usr/src/app/pom.xml -DskipTests clean package
+
 FROM openjdk:17
-
-WORKDIR /app
-
-COPY target/vending-machine-backend-1-SNAPSHOT.jar /app/vending-machine-backend-1-SNAPSHOT.jar
-
+COPY --from=build /usr/src/app/target/vending-machine-backend-1-SNAPSHOT.jar /usr/app/vending-machine-backend-1-SNAPSHOT.jar
 EXPOSE 8080
 
-ARG mongodb_uri
-ARG mongodb-database
+ENV MONGODB_URI ""
+ENV MONGODB_DATABASE ""
 
-ENV MONGODB_URI=$mongodb_uri
-ENV MONGODB_DATABASE=$mongodb-database
-
-CMD ["java", "-jar", "vending-machine-backend-1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","/usr/app/vending-machine-backend-1-SNAPSHOT.jar"]
