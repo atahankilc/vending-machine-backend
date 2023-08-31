@@ -23,6 +23,13 @@ public class UserController {
     }
 
     @PutMapping
+    @RequestMapping("/addMoney")
+    @ResponseBody
+    public UserDto addMoney(@AuthenticationPrincipal Jwt jwt, @RequestBody int addedMoney){
+        return userService.addMoney(jwt.getClaims().get("email").toString(), addedMoney);
+    }
+
+    @PutMapping
     @RequestMapping("/insertCoin")
     @ResponseBody
     public UserDto insertCoin(@AuthenticationPrincipal Jwt jwt, @RequestBody int insertedCoin){

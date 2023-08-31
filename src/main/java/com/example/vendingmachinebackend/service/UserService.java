@@ -31,6 +31,13 @@ public class UserService {
         return new UserDto(userModel);
     }
 
+    public UserDto addMoney(String mailAddress, int addedMoney) {
+        UserModel userModel = userRepository.findByMailAddress(mailAddress);
+        userModel.setWallet(userModel.getWallet() + addedMoney);
+        saveUser(userModel);
+        return new UserDto(userModel);
+    }
+
     public UserDto insertCoin(String mailAddress, int insertedCoin) {
         UserModel userModel = userRepository.findByMailAddress(mailAddress);
         if (insertedCoin > userModel.getWallet()) {
