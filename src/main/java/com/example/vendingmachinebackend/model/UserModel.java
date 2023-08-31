@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("users")
 @Data
 @NoArgsConstructor
-public class User {
+public class UserModel {
 
     @Id
     private String id;
@@ -19,22 +19,11 @@ public class User {
     private int wallet;
     private int inserted;
 
-    public User(String mailAddress, String name, String picture) {
-        super();
+    public UserModel(String mailAddress, String name, String picture) {
         this.mailAddress = mailAddress;
         this.name = name;
         this.picture = picture;
         this.wallet = 0;
         this.inserted = 0;
-    }
-
-    public User(String id, String mailAddress, String name, String picture, int wallet, int inserted) {
-        super();
-        this.id = id;
-        this.mailAddress = mailAddress;
-        this.name = name;
-        this.picture = picture;
-        this.wallet = wallet;
-        this.inserted = inserted;
     }
 }

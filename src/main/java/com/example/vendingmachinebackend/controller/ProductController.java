@@ -1,6 +1,6 @@
 package com.example.vendingmachinebackend.controller;
 
-import com.example.vendingmachinebackend.model.Product;
+import com.example.vendingmachinebackend.dto.ProductDto;
 import com.example.vendingmachinebackend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/product")
 @CrossOrigin
 public class ProductController {
 
@@ -16,27 +16,30 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping
+    @RequestMapping("/getAll")
     @ResponseBody
-    public List<Product> getProducts() {
+    public List<ProductDto> getProducts() {
         return productService.getAllProducts();
     }
 
     @PostMapping
-    @RequestMapping("/update")
+    @RequestMapping("/add")
     @ResponseBody
-    public Product updateProduct(@RequestBody Product product) {
-        return productService.updateProduct(product);
+    public ProductDto addProduct(@RequestBody ProductDto productDto) {
+        return productService.addProduct(productDto);
     }
 
-    @PostMapping
-    @RequestMapping("/add")
-    public void addProduct(@RequestBody Product product) {
-        productService.addProduct(product);
+    @PutMapping
+    @RequestMapping("/update")
+    @ResponseBody
+    public ProductDto updateProduct(@RequestBody ProductDto productDto) {
+        return productService.updateProduct(productDto);
     }
 
     @DeleteMapping
     @RequestMapping("/remove/{productName}")
-    public void addProduct(@PathVariable String productName) {
-        productService.removeProduct(productName);
+    @ResponseBody
+    public ProductDto addProduct(@PathVariable String productName) {
+        return productService.removeProduct(productName);
     }
 }

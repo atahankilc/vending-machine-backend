@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("status")
 @Data
-public class Status {
+public class StatusModel {
 
     @Id
     private String ip;

@@ -1,9 +1,9 @@
 package com.example.vendingmachinebackend.repository;
 
-import com.example.vendingmachinebackend.model.Status;
+import com.example.vendingmachinebackend.model.StatusModel;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface StatusRepository extends MongoRepository<Status, String> {
+public interface StatusRepository extends MongoRepository<StatusModel, String> {
 
-    Status findByField(String field);
+    StatusModel findByField(String field);
 }

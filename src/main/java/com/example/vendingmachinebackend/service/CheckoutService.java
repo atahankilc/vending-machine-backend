@@ -2,9 +2,9 @@ package com.example.vendingmachinebackend.service;
 
 import com.example.vendingmachinebackend.dto.CartDto;
 import com.example.vendingmachinebackend.dto.CheckoutDto;
-import com.example.vendingmachinebackend.model.Product;
-import com.example.vendingmachinebackend.model.Status;
-import com.example.vendingmachinebackend.model.User;
+import com.example.vendingmachinebackend.model.ProductModel;
+import com.example.vendingmachinebackend.model.StatusModel;
+import com.example.vendingmachinebackend.model.UserModel;
 import com.example.vendingmachinebackend.repository.ProductRepository;
 import com.example.vendingmachinebackend.repository.StatusRepository;
 import com.example.vendingmachinebackend.repository.UserRepository;
@@ -25,49 +25,45 @@ public class CheckoutService {
     @Autowired
     StatusRepository statusRepository;
 
-    public int collectMoney() {
-        Status status = statusRepository.findByField("collectedMoney");
-        int collectedMoney = status.getValue();
-        status.setValue(0);
-        statusRepository.save(status);
-        return collectedMoney;
-    }
-
     public CheckoutDto purchase(Map<String, Object> jwtClaim, CartDto cartDto) {
-        User user = userRepository.findByMailAddress(jwtClaim.get("email").toString());
-        int inserted = user.getInserted();
+        UserModel userModel = userRepository.findByMailAddress(jwtClaim.get("email").toString());
+        int inserted = userModel.getInserted();
         int total = 0;
-        boolean errorFlag = false;
+        boolean notEnoughQuantityFlag = false;
 
         for (CartDto.Item item: cartDto.getItemList()) {
-            Product product = productRepository.findByName(item.getName());
+            ProductModel product = productRepository.findByName(item.getName());
             if (item.getCount() <= product.getQuantity()) {
                 total+= item.getCount() * product.getPrice();
             } else {
-                errorFlag = true;
+                notEnoughQuantityFlag = true;
                 break;
             }
         }
-        if (errorFlag || total > inserted) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ZAAAA");
+        if (notEnoughQuantityFlag) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product Quantity Does Not Match With Your Order!");
+        } else if (total > inserted) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You Have To Pay For What You Want!");
         }
 
-        Status status = statusRepository.findByField("collectedMoney");
+        StatusModel status = statusRepository.findByField("collectedMoney");
         status.setValue(status.getValue() + total);
         statusRepository.save(status);
 
         CheckoutDto checkoutDto = new CheckoutDto();
         for (CartDto.Item item: cartDto.getItemList()) {
-            Product product = productRepository.findByName(item.getName());
+            ProductModel product = productRepository.findByName(item.getName());
             product.setQuantity(product.getQuantity() - item.getCount());
             productRepository.save(product);
         }
 
-        user.setInserted(inserted - total);
-        userRepository.save(user);
+        int remaining = inserted - total;
+        userModel.setInserted(0);
+        userModel.setWallet(userModel.getWallet() + remaining);
+        userRepository.save(userModel);
 
         checkoutDto.setReturnedProduct(cartDto);
-        checkoutDto.setRemainingCoin(inserted - total);
+        checkoutDto.setReturnedCoin(remaining);
         return checkoutDto;
     }
 }

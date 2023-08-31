@@ -1,9 +1,7 @@
 package com.example.vendingmachinebackend.service;
 
 import com.example.vendingmachinebackend.dto.UserDto;
-import com.example.vendingmachinebackend.model.Status;
-import com.example.vendingmachinebackend.model.User;
-import com.example.vendingmachinebackend.repository.StatusRepository;
+import com.example.vendingmachinebackend.model.UserModel;
 import com.example.vendingmachinebackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,44 +15,38 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
-    @Autowired
-    StatusRepository statusRepository;
+
+    private UserModel saveUser(UserModel userModel) {
+        return userRepository.save(userModel);
+    }
 
     public UserDto getUserInfo(Map<String, Object> jwtClaim) {
-        User user = userRepository.findByMailAddress(jwtClaim.get("email").toString());
-        if (user == null) {
-            user = userRepository.save(new User(jwtClaim.get("email").toString(), jwtClaim.get("name").toString(), jwtClaim.get("picture").toString()));
+        UserModel userModel = userRepository.findByMailAddress(jwtClaim.get("email").toString());
+        if (userModel == null) {
+            String mailAddress = jwtClaim.get("email").toString();
+            String name = jwtClaim.get("name").toString();
+            String picture = jwtClaim.get("picture").toString();
+            userModel = saveUser(new UserModel(mailAddress, name, picture));
         }
-        UserDto userDto = new UserDto();
-        userDto.setName(user.getName());
-        userDto.setPicture(user.getPicture());
-        userDto.setWallet(user.getWallet());
-        userDto.setInserted(user.getInserted());
-        return userDto;
+        return new UserDto(userModel);
     }
 
-    public int insertCoin(String mailAddress, int insertedCoin) {
-        User user = userRepository.findByMailAddress(mailAddress);
-        if (insertedCoin > user.getWallet()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ZAAAA");
+    public UserDto insertCoin(String mailAddress, int insertedCoin) {
+        UserModel userModel = userRepository.findByMailAddress(mailAddress);
+        if (insertedCoin > userModel.getWallet()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inserted More Than What You Have!");
         }
-        user.setWallet(user.getWallet() - insertedCoin);
-        user.setInserted(user.getInserted() + insertedCoin);
-        userRepository.save(user);
-        return insertedCoin;
+        userModel.setWallet(userModel.getWallet() - insertedCoin);
+        userModel.setInserted(userModel.getInserted() + insertedCoin);
+        saveUser(userModel);
+        return new UserDto(userModel);
     }
 
-    public void refundCoin(String mailAddress) {
-        User user = userRepository.findByMailAddress(mailAddress);
-        user.setWallet(user.getWallet() + user.getInserted());
-        user.setInserted(0);
-        userRepository.save(user);
-    }
-
-    public void enterToSupplierMode(int code) {
-        Status status = statusRepository.findByField("supplierCode");
-        if (code != status.getValue()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ZAAAA");
-        }
+    public UserDto refundCoin(String mailAddress) {
+        UserModel userModel = userRepository.findByMailAddress(mailAddress);
+        userModel.setWallet(userModel.getWallet() + userModel.getInserted());
+        userModel.setInserted(0);
+        userRepository.save(userModel);
+        return new UserDto(userModel);
     }
 }

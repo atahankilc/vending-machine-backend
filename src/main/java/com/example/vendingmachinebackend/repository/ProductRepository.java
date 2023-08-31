@@ -1,11 +1,11 @@
 package com.example.vendingmachinebackend.repository;
 
-import com.example.vendingmachinebackend.model.Product;
+import com.example.vendingmachinebackend.model.ProductModel;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface ProductRepository extends MongoRepository<Product, String> {
+public interface ProductRepository extends MongoRepository<ProductModel, String> {
 
-    Product findByName(String name);
+    ProductModel findByName(String name);
 
-    void deleteByName(String name);
+    ProductModel deleteByName(String name);
 }
