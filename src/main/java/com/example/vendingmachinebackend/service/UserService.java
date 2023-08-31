@@ -1,7 +1,9 @@
 package com.example.vendingmachinebackend.service;
 
 import com.example.vendingmachinebackend.dto.UserDto;
+import com.example.vendingmachinebackend.model.Status;
 import com.example.vendingmachinebackend.model.User;
+import com.example.vendingmachinebackend.repository.StatusRepository;
 import com.example.vendingmachinebackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,8 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    StatusRepository statusRepository;
 
     public UserDto getUserInfo(Map<String, Object> jwtClaim) {
         User user = userRepository.findByMailAddress(jwtClaim.get("email").toString());
@@ -45,5 +49,12 @@ public class UserService {
         user.setWallet(user.getWallet() + user.getInserted());
         user.setInserted(0);
         userRepository.save(user);
+    }
+
+    public void enterToSupplierMode(int code) {
+        Status status = statusRepository.findByField("supplierCode");
+        if (code != status.getValue()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ZAAAA");
+        }
     }
 }

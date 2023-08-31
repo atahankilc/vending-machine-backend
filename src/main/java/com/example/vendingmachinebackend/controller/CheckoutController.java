@@ -21,4 +21,11 @@ public class CheckoutController {
     public CheckoutDto purchase(@AuthenticationPrincipal Jwt jwt, @RequestBody CartDto cartDto){
         return checkoutService.purchase(jwt.getClaims(), cartDto);
     }
+
+    @GetMapping
+    @RequestMapping("/collect")
+    @ResponseBody
+    public int collectMoney() {
+        return checkoutService.collectMoney();
+    }
 }

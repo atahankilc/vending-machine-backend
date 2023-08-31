@@ -20,4 +20,17 @@ public class ProductController {
     public List<Product> getProducts() {
         return productService.getAllProducts();
     }
+
+    @PostMapping
+    @RequestMapping("/update")
+    @ResponseBody
+    public Product updateProduct(@RequestBody Product product) {
+        return productService.updateProduct(product);
+    }
+
+    @PostMapping
+    @RequestMapping("/add")
+    public void addProduct(@RequestBody Product product) {
+        productService.addProduct(product);
+    }
 }

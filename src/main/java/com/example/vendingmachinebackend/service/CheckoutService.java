@@ -25,6 +25,14 @@ public class CheckoutService {
     @Autowired
     StatusRepository statusRepository;
 
+    public int collectMoney() {
+        Status status = statusRepository.findByField("collectedMoney");
+        int collectedMoney = status.getValue();
+        status.setValue(0);
+        statusRepository.save(status);
+        return collectedMoney;
+    }
+
     public CheckoutDto purchase(Map<String, Object> jwtClaim, CartDto cartDto) {
         User user = userRepository.findByMailAddress(jwtClaim.get("email").toString());
         int inserted = user.getInserted();

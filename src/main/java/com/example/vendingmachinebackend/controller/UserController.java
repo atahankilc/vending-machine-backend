@@ -1,7 +1,9 @@
 package com.example.vendingmachinebackend.controller;
 
 import com.example.vendingmachinebackend.dto.UserDto;
+import com.example.vendingmachinebackend.repository.StatusRepository;
 import com.example.vendingmachinebackend.service.UserService;
+import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -35,5 +37,9 @@ public class UserController {
         userService.refundCoin(jwt.getClaims().get("email").toString());
     }
 
-
+    @PostMapping
+    @RequestMapping("/supplierMode")
+    public void enterToSupplierMode(@RequestBody int code){
+        userService.enterToSupplierMode(code);
+    }
 }
