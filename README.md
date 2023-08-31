@@ -1,5 +1,9 @@
 # Vending Machine Backend Application
 
+deployed on render -> https://vending-machine-backend-6ov3.onrender.com
+
+Not: Since I use free version of render, sometimes it can stay unresponsive for a long time, or it gives a direct error. As far as I can see, it allocates resources according to the number of incoming requests, and so it reduces the resources if there is no request for a long time. Page refreshing mostly solves the problem. 
+
 ## Endpoint Structure
 
 - api
@@ -49,3 +53,4 @@
 - Outh2 Authorization Server -> Google
     - Application is structured as an ouath2 resource server, it expects jwt to permit accessing secured endpoints.
       Google Authentication Service is used for verify access tokens.
+    
