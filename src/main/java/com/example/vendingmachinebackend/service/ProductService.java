@@ -30,4 +30,11 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    public void removeProduct(String productName) {
+        if(productRepository.findByName(productName) == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ZAAAA");
+        }
+        productRepository.deleteByName(productName);
+    }
+
 }

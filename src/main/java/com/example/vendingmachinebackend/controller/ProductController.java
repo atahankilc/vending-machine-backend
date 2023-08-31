@@ -33,4 +33,10 @@ public class ProductController {
     public void addProduct(@RequestBody Product product) {
         productService.addProduct(product);
     }
+
+    @DeleteMapping
+    @RequestMapping("/remove/{productName}")
+    public void addProduct(@PathVariable String productName) {
+        productService.removeProduct(productName);
+    }
 }
