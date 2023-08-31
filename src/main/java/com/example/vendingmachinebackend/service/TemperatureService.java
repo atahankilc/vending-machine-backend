@@ -9,7 +9,7 @@ public class TemperatureService {
     private float temperature = 30f;
     private boolean coolingFlag = false;
 
-    @Scheduled(fixedRate = 10000) // every 10 minutes
+    @Scheduled(fixedRate = 10 * 60000) // every 10 minutes
     public void cooler() {
         if (temperature > 20f) {
             coolingFlag = true;
