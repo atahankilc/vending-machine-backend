@@ -31,10 +31,10 @@ public class CheckoutService {
         int total = 0;
         boolean notEnoughQuantityFlag = false;
 
-        for (CartDto.Item item: cartDto.getItemList()) {
-            ProductModel product = productRepository.findByName(item.getName());
-            if (item.getCount() <= product.getQuantity()) {
-                total+= item.getCount() * product.getPrice();
+        for (CartDto.ItemDto itemDto: cartDto.getItemList()) {
+            ProductModel product = productRepository.findByName(itemDto.getName());
+            if (itemDto.getCount() <= product.getQuantity()) {
+                total+= itemDto.getCount() * product.getPrice();
             } else {
                 notEnoughQuantityFlag = true;
                 break;
@@ -51,9 +51,9 @@ public class CheckoutService {
         statusRepository.save(status);
 
         CheckoutDto checkoutDto = new CheckoutDto();
-        for (CartDto.Item item: cartDto.getItemList()) {
-            ProductModel product = productRepository.findByName(item.getName());
-            product.setQuantity(product.getQuantity() - item.getCount());
+        for (CartDto.ItemDto itemDto: cartDto.getItemList()) {
+            ProductModel product = productRepository.findByName(itemDto.getName());
+            product.setQuantity(product.getQuantity() - itemDto.getCount());
             productRepository.save(product);
         }
 

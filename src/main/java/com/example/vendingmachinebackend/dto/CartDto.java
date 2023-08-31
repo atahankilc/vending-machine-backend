@@ -6,10 +6,10 @@ import java.util.List;
 
 @Data
 public class CartDto {
-    List<Item> itemList;
+    List<ItemDto> itemList;
 
     @Data
-    public static class Item {
+    public static class ItemDto {
         private String name;
         private int count;
     }
